@@ -11,10 +11,8 @@ jobs:
     steps:
       - name: Update GH Actions Tools 
         run: |
-          apk update
-          apk upgrade
-          apk add --no-cache coreutils
-          apk add bash docker git sed
+          apt-get update
+          apt-get install bash docker git sed
       - name: Create Workspace Dir for operations
         run: |
               mkdir -p ./workspace
