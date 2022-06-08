@@ -38,6 +38,12 @@ jobs:
                sed -i "s/(under development)/$CYBER_VERSION/" constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
                sed 's/"Constellation";/"Constellation Cyber";/' constellation/CoreUtilities/src/au/gov/asd/tac/constellation/utilities/BrandingUtilities.java
 
+      - name: Temporary Workaround
+        run: |
+               sed -i "s/9.15.1/9.15/" constellation_cyber_plugins/CyberImportExportPlugins/nbproject/project.xml
+               sed -i "s/8.41.1/8.41/" constellation_cyber_plugins/CyberImportExportPlugins/nbproject/project.xml
+               sed -i "s/9.16.1/9.16/" constellation_cyber_plugins/CyberImportExportPlugins/nbproject/project.xml
+
       - name: Add Execute Privilege to Scripts
         run: |
               chmod +x constellation-applications/build-zip.sh
