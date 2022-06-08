@@ -43,8 +43,8 @@ jobs:
               ls
       - name: Run build process within Docker container
         run: |
-            echo docker pull "${RUNNER_IMAGE}"
-            echo docker run -e GIT_DISCOVERY_ACROSS_FILESYSTEM=1 \
+            docker pull "${RUNNER_IMAGE}"
+            docker run -e GIT_DISCOVERY_ACROSS_FILESYSTEM=1 \
             --mount "type=bind,source=$(pwd),target=/code" \
             --workdir /code/workspace/constellation-applications \
             ${RUNNER_IMAGE} \
