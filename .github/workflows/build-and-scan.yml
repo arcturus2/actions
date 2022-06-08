@@ -19,7 +19,8 @@ jobs:
     - name: Dir Check
       run: |
         pwd
-        echo ${{ HOME }}
+        echo $HOME
+        echo ${HOME}
       
       # Set the verbose flag as a variable
     - name: Set Verbosity
