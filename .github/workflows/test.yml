@@ -35,7 +35,7 @@ jobs:
               ls
       - uses: addnab/docker-run-action@v3
         with:
-          image: ${RUNNER_IMAGE}
+          image: constellationapplication/netbeans-runner:12.0.4
           options: -v ${{ github.workspace }}:/code
           run: |
             ./build-zip.sh -a constellation-cyber -m "constellation constellation-adaptors constellation_cyber_plugins"
