@@ -1,0 +1,52 @@
+name: Build and Scan
+
+on:
+  push:
+    branches:
+    - master
+
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+    branches:
+    - master
+
+jobs:
+  unit_tests:
+    name: Unit Tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout this commit
+    - name: Checkout Branch
+      uses: actions/checkout@v1
+      
+      # Set the verbose flag as a variable
+    - name: Set Verbosity
+      id: verbosity
+      run: |
+        if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo '::set-output name=VERBOSITY::-v -verbose' && echo 'Verbose Logging Enabled'; else echo '::set-output name=VERBOSITY::-v " "' && echo 'Verbose Logging Disabled'; fi
+
+      # Cache the ivy dependencies
+    - name: Restore Ivy Cache
+      id: cache-dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.ivy2
+        key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
+
+    - name: Add Execute Privilege to Scripts
+      run: |
+        chmod +x constellation/.githubutilities/run-tests.sh
+        chmod +x constellation/.githubutilities/sonar.sh
+
+    - name: Run Tests
+      uses: addnab/docker-run-action@v3
+      with:
+        image: constellationapplication/netbeans-runner:12.0.4
+        options: |
+          --volume ${{ github.workspace }}:/code
+          --volume ~/.ivy2::/root/.ivy2
+          --workdir /code/constellation
+        run: |
+          .githubutilities/run-tests.sh ${{ steps.verbosity.outputs.VERBOSITY }}
