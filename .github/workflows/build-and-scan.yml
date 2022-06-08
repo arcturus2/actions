@@ -19,8 +19,7 @@ jobs:
     - name: Dir Check
       run: |
         pwd
-        ls -l
-        ls constellation
+        echo ${{HOME }}
       
       # Set the verbose flag as a variable
     - name: Set Verbosity
@@ -33,7 +32,7 @@ jobs:
       id: cache-dependencies
       uses: actions/cache@v3
       with:
-        path: $HOME/.ivy2
+        path: ~/.ivy2
         key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
 
     - name: Add Execute Privilege to Scripts
@@ -47,7 +46,7 @@ jobs:
         image: constellationapplication/netbeans-runner:12.0.4
         options: |
           --volume ${{ github.workspace }}:/code
-          --volume $HOME/.ivy2:/root/.ivy2
+          --volume ${{ HOME }}/.ivy2:/root/.ivy2
           --workdir /code/constellation
         run: |
           .githubutilities/run-tests.sh ${{ steps.verbosity.outputs.VERBOSITY }}
