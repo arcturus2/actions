@@ -15,12 +15,6 @@ jobs:
       with:
         repository: constellation-app/constellation
         path: constellation
-
-    - name: Dir Check
-      run: |
-        pwd
-        echo $HOME
-        echo ${HOME}
       
       # Set the verbose flag as a variable
     - name: Set Verbosity
@@ -35,6 +29,11 @@ jobs:
       with:
         path: ~/.ivy2
         key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
+
+    - name: Create Ivy Cache
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      run: |
+        mkdir ~/.ivy2
 
     - name: Add Execute Privilege to Scripts
       run: |
