@@ -14,28 +14,44 @@ jobs:
         with:
           repository: constellation-app/constellation
           path: constellation
+
+      - name: Checkout Constellation Adaptors repository
+        uses: actions/checkout@v2
+        with:
+          repository: constellation-app/constellation-adaptors
+          path: constellation-adaptors
+
       - name: Checkout Constellation Cyber repository
         uses: actions/checkout@v2
         with:
           repository: AustralianCyberSecurityCentre/constellation_cyber_plugins
           path: constellation_cyber_plugins
+
       - name: Checkout Constellation Applications repository
         uses: actions/checkout@v2
         with:
           repository: constellation-app/constellation-applications
           path: constellation-applications
+
       - name: Update Version Number
         run: |
                sed -i "s/(under development)/$CYBER_VERSION/" constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
                sed 's/"Constellation";/"Constellation Cyber";/' constellation/CoreUtilities/src/au/gov/asd/tac/constellation/utilities/BrandingUtilities.java
+
       - name: Add Execute Privilege to Scripts
         run: |
               chmod +x constellation-applications/build-zip.sh
               chmod +x constellation-applications/functions.sh
-              ls
+
       - uses: addnab/docker-run-action@v3
         with:
           image: constellationapplication/netbeans-runner:12.0.4
-          options: -v ${{ github.workspace }}:/code -w /code/constellation-applications
+          options: |
+            --volume ${{ github.workspace }}:/code 
+            --workdir /code/constellation-applications
           run: |
             ./build-zip.sh -a constellation-cyber -m "constellation constellation-adaptors constellation_cyber_plugins"
+
+      - name: Check release
+        run: |
+              ls -l constellation-applications/constellation-cyber/dist
