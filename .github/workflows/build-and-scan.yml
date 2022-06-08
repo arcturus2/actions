@@ -47,7 +47,7 @@ jobs:
         image: constellationapplication/netbeans-runner:12.0.4
         options: |
           --volume ${{ github.workspace }}:/code
-          --volume ~/.ivy2::/root/.ivy2
+          --volume ~/.ivy2:/root/.ivy2
           --workdir /code/constellation
         run: |
           .githubutilities/run-tests.sh ${{ steps.verbosity.outputs.VERBOSITY }}
