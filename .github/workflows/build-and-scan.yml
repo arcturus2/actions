@@ -11,7 +11,9 @@ jobs:
     steps:
       # Checkout this commit
     - name: Checkout Branch
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        repository: constellation-app/constellation
       
       # Set the verbose flag as a variable
     - name: Set Verbosity
