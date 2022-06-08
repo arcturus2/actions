@@ -9,43 +9,33 @@ jobs:
       RUNNER_IMAGE: "constellationapplication/netbeans-runner:12.0.4"
       CYBER_VERSION: "v1.6.0"
     steps:
-      - name: Update GH Actions Tools 
-        run: |
-          sudo apt-get update
-          sudo apt-get install bash docker git sed
-      - name: Create Workspace Dir for operations
-        run: |
-              mkdir -p ./workspace
       - name: Checkout Constellation repository
         uses: actions/checkout@v2
         with:
           repository: constellation-app/constellation
-          path: ./workspace/constellation
+          path: constellation
       - name: Checkout Constellation Cyber repository
         uses: actions/checkout@v2
         with:
           repository: AustralianCyberSecurityCentre/constellation_cyber_plugins
-          path: ./workspace/constellation_cyber_plugins
+          path: constellation_cyber_plugins
       - name: Checkout Constellation Applications repository
         uses: actions/checkout@v2
         with:
           repository: constellation-app/constellation-applications
-          path: ./workspace/constellation-applications
+          path: constellation-applications
       - name: Update Version Number
         run: |
-               sed -i "s/(under development)/$CYBER_VERSION/" ./workspace/constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
-               sed 's/"Constellation";/"Constellation Cyber";/' ./workspace/constellation/CoreUtilities/src/au/gov/asd/tac/constellation/utilities/BrandingUtilities.java
+               sed -i "s/(under development)/$CYBER_VERSION/" constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
+               sed 's/"Constellation";/"Constellation Cyber";/' constellation/CoreUtilities/src/au/gov/asd/tac/constellation/utilities/BrandingUtilities.java
       - name: Add Execute Privilege to Scripts
         run: |
-              chmod +x ./workspace/constellation-applications/build-zip.sh
-              chmod +x ./workspace/constellation-applications/functions.sh
-              echo $(pwd)
+              chmod +x constellation-applications/build-zip.sh
+              chmod +x constellation-applications/functions.sh
               ls
-      - name: Run build process within Docker container
-        run: |
-            docker pull "${RUNNER_IMAGE}"
-            docker run -e GIT_DISCOVERY_ACROSS_FILESYSTEM=1 \
-            --mount "type=bind,source=$(pwd),target=/code" \
-            --workdir /code/workspace/constellation-applications \
-            ${RUNNER_IMAGE} \
+      - uses: addnab/docker-run-action@v3
+        with:
+          image: ${RUNNER_IMAGE}
+          options: -v ${{ github.workspace }}:/code
+          run: |
             ./build-zip.sh -a constellation-cyber -m "constellation constellation-adaptors constellation_cyber_plugins"
