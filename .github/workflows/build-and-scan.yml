@@ -1,14 +1,6 @@
 name: Build and Scan
 
-on:
-  push:
-    branches:
-    - master
-
-  pull_request:
-    types: [opened, synchronize, reopened, labeled, unlabeled]
-    branches:
-    - master
+on: workflow_dispatch
 
 jobs:
   unit_tests:
